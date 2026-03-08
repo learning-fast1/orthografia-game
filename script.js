@@ -36,7 +36,17 @@ const words = [
     { article: 'οι', stem: 'λύκ', option: 'οι', correct: 'οι', full: 'λύκοι' },
     { article: 'οι', stem: 'κήπ', option: 'οι', correct: 'οι', full: 'κήποι' },
     { article: 'οι', stem: 'γιατρ', option: 'οι', correct: 'οί', full: 'γιατροί' },
-    { article: 'οι', stem: 'δάσκαλ', option: 'οι', correct: 'οι', full: 'δάσκαλοι' }
+    { article: 'οι', stem: 'δάσκαλ', option: 'οι', correct: 'οι', full: 'δάσκαλοι' },
+
+    // Ουσιαστικά σε -ο
+    { article: 'το', stem: 'βάζ', option: 'ο', correct: 'ο', full: 'βάζο' },
+    { article: 'το', stem: 'μήλ', option: 'ο', correct: 'ο', full: 'μήλο' },
+    { article: 'το', stem: 'βιβλί', option: 'ο', correct: 'ο', full: 'βιβλίο' },
+    { article: 'το', stem: 'νερ', option: 'ο', correct: 'ό', full: 'νερό' },
+    { article: 'το', stem: 'βουν', option: 'ο', correct: 'ό', full: 'βουνό' },
+    { article: 'το', stem: 'δέντρ', option: 'ο', correct: 'ο', full: 'δέντρο' },
+    { article: 'το', stem: 'φύλλ', option: 'ο', correct: 'ο', full: 'φύλλο' },
+    { article: 'το', stem: 'χωρι', option: 'ο', correct: 'ό', full: 'χωριό' }
 ];
 
 let currentWordIndex = 0;

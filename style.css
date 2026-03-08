@@ -221,6 +221,7 @@ header p {
 .option-btn[data-ending="ει"] { background: var(--tertiary-color); box-shadow: 0 6px 0 var(--tertiary-color-hover); }
 .option-btn[data-ending="οι"] { background: var(--quaternary-color); box-shadow: 0 6px 0 var(--quaternary-color-hover); }
 .option-btn[data-ending="ω"] { background: #9B59B6; box-shadow: 0 6px 0 #8E44AD; }
+.option-btn[data-ending="ο"] { background: #FFB142; box-shadow: 0 6px 0 #CC8E35; }
 
 /* Animation για το σωστό κουμπί όταν βρεθεί */
 @keyframes pulse-btn {
