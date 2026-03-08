@@ -100,7 +100,7 @@ function loadWord() {
         wordArticleEl.textContent = '';
     }
     wordStemEl.textContent = currentWord.stem;
-    wordEndingEl.textContent = '_';
+    wordEndingEl.textContent = '\u00A0';
     wordEndingEl.className = 'missing';
     wordCardEl.className = 'word-card';
     feedbackMessageEl.textContent = '';
