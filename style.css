@@ -129,6 +129,11 @@ header p {
     animation: float 3s ease-in-out infinite;
 }
 
+.word-article {
+    margin-right: 15px; /* Απόσταση από τη λέξη */
+    color: #6C5CE7; /* Ελαφρώς διαφορετικό χρώμα για να ξεχωρίζει */
+}
+
 .missing {
     color: var(--wrong-color);
     border-bottom: 5px solid var(--wrong-color);

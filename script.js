@@ -1,45 +1,41 @@
 const words = [
     // Ουσιαστικά σε -ι
-    { stem: 'πουλ', option: 'ι', correct: 'ί', full: 'πουλί' },
-    { stem: 'παιδ', option: 'ι', correct: 'ί', full: 'παιδί' },
-    { stem: 'σκυλ', option: 'ι', correct: 'ί', full: 'σκυλί' },
-    { stem: 'χέρ', option: 'ι', correct: 'ι', full: 'χέρι' },
-    { stem: 'πόδ', option: 'ι', correct: 'ι', full: 'πόδι' },
-    { stem: 'μαχαίρ', option: 'ι', correct: 'ι', full: 'μαχαίρι' },
-    { stem: 'σπίτ', option: 'ι', correct: 'ι', full: 'σπίτι' },
-    { stem: 'κουτί', option: 'ι', correct: 'ί', full: 'κουτί' }, // wait stem is κουτ
+    { article: 'το', stem: 'πουλ', option: 'ι', correct: 'ί', full: 'πουλί' },
+    { article: 'το', stem: 'παιδ', option: 'ι', correct: 'ί', full: 'παιδί' },
+    { article: 'το', stem: 'σκυλ', option: 'ι', correct: 'ί', full: 'σκυλί' },
+    { article: 'το', stem: 'χέρ', option: 'ι', correct: 'ι', full: 'χέρι' },
+    { article: 'το', stem: 'πόδ', option: 'ι', correct: 'ι', full: 'πόδι' },
+    { article: 'το', stem: 'μαχαίρ', option: 'ι', correct: 'ι', full: 'μαχαίρι' },
+    { article: 'το', stem: 'σπίτ', option: 'ι', correct: 'ι', full: 'σπίτι' },
+    { article: 'το', stem: 'κουτ', option: 'ι', correct: 'ί', full: 'κουτί' },
     
     // Ουσιαστικά σε -η
-    { stem: 'φων', option: 'η', correct: 'ή', full: 'φωνή' },
-    { stem: 'βρύσ', option: 'η', correct: 'η', full: 'βρύση' },
-    { stem: 'νίκ', option: 'η', correct: 'η', full: 'νίκη' },
-    { stem: 'αγάπ', option: 'η', correct: 'η', full: 'αγάπη' },
-    { stem: 'αυλ', option: 'η', correct: 'ή', full: 'αυλή' },
-    { stem: 'βροχ', option: 'η', correct: 'ή', full: 'βροχή' },
-    { stem: 'αράχν', option: 'η', correct: 'η', full: 'αράχνη' },
+    { article: 'η', stem: 'φων', option: 'η', correct: 'ή', full: 'φωνή' },
+    { article: 'η', stem: 'βρύσ', option: 'η', correct: 'η', full: 'βρύση' },
+    { article: 'η', stem: 'νίκ', option: 'η', correct: 'η', full: 'νίκη' },
+    { article: 'η', stem: 'αγάπ', option: 'η', correct: 'η', full: 'αγάπη' },
+    { article: 'η', stem: 'αυλ', option: 'η', correct: 'ή', full: 'αυλή' },
+    { article: 'η', stem: 'βροχ', option: 'η', correct: 'ή', full: 'βροχή' },
+    { article: 'η', stem: 'αράχν', option: 'η', correct: 'η', full: 'αράχνη' },
 
-    // Ρήματα σε -ει
-    { stem: 'τρέχ', option: 'ει', correct: 'ει', full: 'τρέχει' },
-    { stem: 'παίζ', option: 'ει', correct: 'ει', full: 'παίζει' },
-    { stem: 'γράφ', option: 'ει', correct: 'ει', full: 'γράφει' },
-    { stem: 'διαβάζ', option: 'ει', correct: 'ει', full: 'διαβάζει' },
-    { stem: 'βλέπ', option: 'ει', correct: 'ει', full: 'βλέπει' },
-    { stem: 'κλαί', option: 'ει', correct: 'ει', full: 'κλαίει' },
-    { stem: 'τραγουδά', option: 'ει', correct: 'ει', full: 'τραγουδάει' },
+    // Ρήματα σε -ει (δεν παίρνουν άρθρο)
+    { article: '', stem: 'τρέχ', option: 'ει', correct: 'ει', full: 'τρέχει' },
+    { article: '', stem: 'παίζ', option: 'ει', correct: 'ει', full: 'παίζει' },
+    { article: '', stem: 'γράφ', option: 'ει', correct: 'ει', full: 'γράφει' },
+    { article: '', stem: 'διαβάζ', option: 'ει', correct: 'ει', full: 'διαβάζει' },
+    { article: '', stem: 'βλέπ', option: 'ει', correct: 'ει', full: 'βλέπει' },
+    { article: '', stem: 'κλαί', option: 'ει', correct: 'ει', full: 'κλαίει' },
+    { article: '', stem: 'τραγουδά', option: 'ει', correct: 'ει', full: 'τραγουδάει' },
 
     // Πληθυντικός Ουσιαστικών σε -οι
-    { stem: 'άνθρωπ', option: 'οι', correct: 'οι', full: 'άνθρωποι' },
-    { stem: 'δρόμ', option: 'οι', correct: 'οι', full: 'δρόμοι' },
-    { stem: 'φίλ', option: 'οι', correct: 'οι', full: 'φίλοι' },
-    { stem: 'λύκ', option: 'οι', correct: 'οι', full: 'λύκοι' },
-    { stem: 'κήπ', option: 'οι', correct: 'οι', full: 'κήποι' },
-    { stem: 'γιατρ', option: 'οι', correct: 'οί', full: 'γιατροί' },
-    { stem: 'δασκάλ', option: 'οι', correct: 'οι', full: 'δάσκαλοι' } // wait, δάσκαλ + οι.
+    { article: 'οι', stem: 'άνθρωπ', option: 'οι', correct: 'οι', full: 'άνθρωποι' },
+    { article: 'οι', stem: 'δρόμ', option: 'οι', correct: 'οι', full: 'δρόμοι' },
+    { article: 'οι', stem: 'φίλ', option: 'οι', correct: 'οι', full: 'φίλοι' },
+    { article: 'οι', stem: 'λύκ', option: 'οι', correct: 'οι', full: 'λύκοι' },
+    { article: 'οι', stem: 'κήπ', option: 'οι', correct: 'οι', full: 'κήποι' },
+    { article: 'οι', stem: 'γιατρ', option: 'οι', correct: 'οί', full: 'γιατροί' },
+    { article: 'οι', stem: 'δάσκαλ', option: 'οι', correct: 'οι', full: 'δάσκαλοι' }
 ];
-
-// Διόρθωση μερικών λέξεων
-words[7] = { stem: 'κουτ', option: 'ι', correct: 'ί', full: 'κουτί' };
-words[26] = { stem: 'δάσκαλ', option: 'οι', correct: 'οι', full: 'δάσκαλοι' };
 
 let currentWordIndex = 0;
 let correctScore = 0;
@@ -47,6 +43,7 @@ let wrongScore = 0;
 let attemptsForWord = 0; // tracking if they missed the first try
 
 // DOM Elements
+const wordArticleEl = document.getElementById('word-article');
 const wordStemEl = document.getElementById('word-stem');
 const wordEndingEl = document.getElementById('word-ending');
 const wordCardEl = document.getElementById('word-card');
@@ -75,7 +72,7 @@ const playWrongSound = () => {
 
 // Initialize Game
 function initGame() {
-    words.sort(() => Math.random() - 0.5);
+    shuffleArray(words);
     currentWordIndex = 0;
     correctScore = 0;
     wrongScore = 0;
@@ -83,11 +80,25 @@ function initGame() {
     loadWord();
 }
 
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
 function loadWord() {
     attemptsForWord = 0;
     const currentWord = words[currentWordIndex];
     
     // Reset UI
+    if (currentWord.article) {
+        wordArticleEl.textContent = currentWord.article + ' ';
+        wordArticleEl.style.display = 'inline';
+    } else {
+        wordArticleEl.style.display = 'none';
+        wordArticleEl.textContent = '';
+    }
     wordStemEl.textContent = currentWord.stem;
     wordEndingEl.textContent = '_';
     wordEndingEl.className = 'missing';
@@ -148,6 +159,11 @@ function handleOptionClick(event) {
         });
         
         // Show next button
+        if (currentWordIndex === words.length - 1) {
+            nextBtn.textContent = 'Παίξε ξανά 🔄';
+        } else {
+            nextBtn.textContent = 'Επόμενη Λέξη ➔';
+        }
         nextBtn.classList.remove('hidden');
         
     } else {
@@ -187,7 +203,7 @@ nextBtn.addEventListener('click', () => {
     if (currentWordIndex >= words.length) {
         // restart array
         initGame();
-        feedbackMessageEl.textContent = 'Μπράβο! Τελείωσες όλες τις λέξεις! 🏆';
+        feedbackMessageEl.textContent = 'Μπράβο! Τελείωσες όλες τις λέξεις και ξεκινάμε νέο γύρο! 🏆';
         feedbackMessageEl.className = 'feedback-message success pop-in';
     } else {
         loadWord();
