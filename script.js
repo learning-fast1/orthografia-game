@@ -49,21 +49,13 @@ const words = [
     { article: 'το', stem: 'χωρι', option: 'ο', correct: 'ό', full: 'χωριό' }
 ];
 
-let currentWordIndex = 0;
-let correctScore = 0;
-let wrongScore = 0;
-let attemptsForWord = 0; // tracking if they missed the first try
+// DOM Elements for Mode Selection
+const startScreenEl = document.getElementById('start-screen');
+const gameContainerEl = document.getElementById('game-container');
+const templateEl = document.getElementById('player-board-template');
 
-// DOM Elements
-const wordArticleEl = document.getElementById('word-article');
-const wordStemEl = document.getElementById('word-stem');
-const wordEndingEl = document.getElementById('word-ending');
-const wordCardEl = document.getElementById('word-card');
-const feedbackMessageEl = document.getElementById('feedback-message');
-const optionBtns = document.querySelectorAll('.option-btn');
-const nextBtn = document.getElementById('next-btn');
-const correctScoreEl = document.getElementById('correct-score');
-const wrongScoreEl = document.getElementById('wrong-score');
+// Global Instances
+let playerBoards = [];
 
 // Ήχοι (Προαιρετικό, αν θέλεις να προσθέσεις στο μέλλον)
 const playCorrectSound = () => {
@@ -82,145 +74,198 @@ const playWrongSound = () => {
     } catch (e) {}
 };
 
-// Initialize Game
-function initGame() {
-    shuffleArray(words);
-    currentWordIndex = 0;
-    correctScore = 0;
-    wrongScore = 0;
-    updateScore();
-    loadWord();
-}
-
 function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
     }
+    return newArray;
 }
 
-function loadWord() {
-    attemptsForWord = 0;
-    const currentWord = words[currentWordIndex];
-    
-    // Reset UI
-    if (currentWord.article) {
-        wordArticleEl.textContent = currentWord.article + ' ';
-        wordArticleEl.style.display = 'inline';
-    } else {
-        wordArticleEl.style.display = 'none';
-        wordArticleEl.textContent = '';
+class PlayerBoard {
+    constructor(containerElement) {
+        // Clone the template
+        this.boardEl = templateEl.content.cloneNode(true).querySelector('.player-board');
+        containerElement.appendChild(this.boardEl);
+        
+        // Find specific elements within this board
+        this.wordArticleEl = this.boardEl.querySelector('.word-article');
+        this.wordStemEl = this.boardEl.querySelector('.word-stem');
+        this.wordEndingEl = this.boardEl.querySelector('.word-ending');
+        this.wordCardEl = this.boardEl.querySelector('.word-card');
+        this.feedbackMessageEl = this.boardEl.querySelector('.feedback-message');
+        this.optionBtns = this.boardEl.querySelectorAll('.option-btn');
+        this.nextBtn = this.boardEl.querySelector('.next-btn');
+        this.correctScoreEl = this.boardEl.querySelector('.correct-score');
+        this.wrongScoreEl = this.boardEl.querySelector('.wrong-score');
+        
+        // Bind events
+        this.optionBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => this.handleOptionClick(e));
+        });
+        this.nextBtn.addEventListener('click', () => this.handleNextClick());
+        
+        // Initialize Game State
+        this.initGame();
     }
-    wordStemEl.textContent = currentWord.stem;
-    wordEndingEl.textContent = '\u00A0';
-    wordEndingEl.className = 'missing';
-    wordCardEl.className = 'word-card';
-    feedbackMessageEl.textContent = '';
-    feedbackMessageEl.className = 'feedback-message';
-    nextBtn.classList.add('hidden');
     
-    // Ενεργοποίηση κουμπιών με εφε
-    optionBtns.forEach(btn => {
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        btn.style.transform = 'scale(1)';
-    });
-}
-
-function updateScore() {
-    correctScoreEl.textContent = correctScore;
-    wrongScoreEl.textContent = wrongScore;
-}
-
-function handleOptionClick(event) {
-    const selectedOption = event.target.getAttribute('data-ending');
-    const currentWord = words[currentWordIndex];
-
-    if (selectedOption === currentWord.option) {
-        // Correct Answer
-        playCorrectSound();
-        wordEndingEl.textContent = currentWord.correct; // Βάζουμε το τονισμένο αν χρειάζεται
-        wordEndingEl.className = 'missing filled-correct';
-        wordCardEl.className = 'word-card correct-anim';
+    initGame() {
+        this.playerWords = shuffleArray(words);
+        this.currentWordIndex = 0;
+        this.correctScore = 0;
+        this.wrongScore = 0;
+        this.updateScore();
+        this.loadWord();
+    }
+    
+    loadWord() {
+        this.attemptsForWord = 0;
+        const currentWord = this.playerWords[this.currentWordIndex];
         
-        feedbackMessageEl.textContent = 'Τέλεια! 🌟';
-        feedbackMessageEl.className = 'feedback-message success pop-in';
-        
-        if (attemptsForWord === 0) {
-            correctScore++;
-            updateScore();
-        }
-
-        // Fire Confetti
-        confetti({
-            particleCount: 200,
-            spread: 90,
-            origin: { y: 0.5 },
-            colors: ['#FF4757', '#2ED573', '#FFA502', '#1E90FF', '#FF69B4']
-        });
-
-        // Disable buttons
-        optionBtns.forEach(btn => {
-            btn.disabled = true;
-            if (btn.getAttribute('data-ending') !== currentWord.option) {
-                btn.style.opacity = '0.4';
-                btn.style.transform = 'scale(0.95)';
-            } else {
-                btn.classList.add('pulse-btn');
-            }
-        });
-        
-        // Show next button
-        if (currentWordIndex === words.length - 1) {
-            nextBtn.textContent = 'Παίξε ξανά 🔄';
+        // Reset UI
+        if (currentWord.article) {
+            this.wordArticleEl.textContent = currentWord.article + ' ';
+            this.wordArticleEl.style.display = 'inline';
         } else {
-            nextBtn.textContent = 'Επόμενη Λέξη ➔';
+            this.wordArticleEl.style.display = 'none';
+            this.wordArticleEl.textContent = '';
         }
-        nextBtn.classList.remove('hidden');
+        this.wordStemEl.textContent = currentWord.stem;
+        this.wordEndingEl.textContent = '\u00A0';
+        this.wordEndingEl.className = 'word-ending missing';
+        this.wordCardEl.className = 'word-card';
+        this.feedbackMessageEl.textContent = '';
+        this.feedbackMessageEl.className = 'feedback-message';
+        this.nextBtn.classList.add('hidden');
         
-    } else {
-        // Wrong Answer
-        playWrongSound();
-        attemptsForWord++;
-        
-        wordCardEl.classList.remove('shake');
-        void wordCardEl.offsetWidth; // trigger reflow
-        wordCardEl.classList.add('shake');
-        
-        feedbackMessageEl.textContent = 'Ωχ! Δοκίμασε ξανά... 🤔';
-        feedbackMessageEl.className = 'feedback-message error';
-        
-        if (attemptsForWord === 1) {
-            wrongScore++;
-            updateScore();
+        // Ενεργοποίηση κουμπιών με εφε
+        this.optionBtns.forEach(btn => {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.transform = 'scale(1)';
+        });
+    }
+
+    updateScore() {
+        this.correctScoreEl.textContent = this.correctScore;
+        this.wrongScoreEl.textContent = this.wrongScore;
+    }
+
+    handleOptionClick(event) {
+        const selectedOption = event.target.getAttribute('data-ending');
+        const currentWord = this.playerWords[this.currentWordIndex];
+
+        if (selectedOption === currentWord.option) {
+            // Correct Answer
+            playCorrectSound();
+            this.wordEndingEl.textContent = currentWord.correct;
+            this.wordEndingEl.className = 'word-ending missing filled-correct';
+            this.wordCardEl.className = 'word-card correct-anim';
+            
+            this.feedbackMessageEl.textContent = 'Τέλεια! 🌟';
+            this.feedbackMessageEl.className = 'feedback-message success pop-in';
+            
+            if (this.attemptsForWord === 0) {
+                this.correctScore++;
+                this.updateScore();
+            }
+
+            // Fire Confetti
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { 
+                    x: this.boardEl.getBoundingClientRect().left / window.innerWidth + (this.boardEl.getBoundingClientRect().width / 2) / window.innerWidth,
+                    y: this.boardEl.getBoundingClientRect().top / window.innerHeight + (this.boardEl.getBoundingClientRect().height / 2) / window.innerHeight
+                },
+                colors: ['#FF4757', '#2ED573', '#FFA502', '#1E90FF', '#FF69B4']
+            });
+
+            // Disable buttons
+            this.optionBtns.forEach(btn => {
+                btn.disabled = true;
+                if (btn.getAttribute('data-ending') !== currentWord.option) {
+                    btn.style.opacity = '0.4';
+                    btn.style.transform = 'scale(0.95)';
+                } else {
+                    btn.classList.add('pulse-btn');
+                }
+            });
+            
+            // Show next button
+            if (this.currentWordIndex === this.playerWords.length - 1) {
+                this.nextBtn.textContent = 'Παίξε ξανά 🔄';
+            } else {
+                this.nextBtn.textContent = 'Επόμενη Λέξη ➔';
+            }
+            this.nextBtn.classList.remove('hidden');
+            
+        } else {
+            // Wrong Answer
+            playWrongSound();
+            this.attemptsForWord++;
+            
+            this.wordCardEl.classList.remove('shake');
+            void this.wordCardEl.offsetWidth; // trigger reflow
+            this.wordCardEl.classList.add('shake');
+            
+            this.feedbackMessageEl.textContent = 'Ωχ! Δοκίμασε ξανά... 🤔';
+            this.feedbackMessageEl.className = 'feedback-message error';
+            
+            if (this.attemptsForWord === 1) {
+                this.wrongScore++;
+                this.updateScore();
+            }
+            
+            // Disable the clicked wrong button
+            event.target.disabled = true;
+            event.target.style.opacity = '0.4';
+            event.target.style.transform = 'scale(0.9)';
         }
+    }
+
+    handleNextClick() {
+        // Αφαίρεση pulse animation
+        this.optionBtns.forEach(btn => btn.classList.remove('pulse-btn'));
         
-        // Disable the clicked wrong button
-        event.target.disabled = true;
-        event.target.style.opacity = '0.4';
-        event.target.style.transform = 'scale(0.9)';
+        this.currentWordIndex++;
+        if (this.currentWordIndex >= this.playerWords.length) {
+            // restart array
+            this.initGame();
+            this.feedbackMessageEl.textContent = 'Μπράβο! Τελείωσες όλες τις λέξεις και ξεκινάμε νέο γύρο! 🏆';
+            this.feedbackMessageEl.className = 'feedback-message success pop-in';
+        } else {
+            this.loadWord();
+        }
     }
 }
 
-// Event Listeners
-optionBtns.forEach(btn => {
-    btn.addEventListener('click', handleOptionClick);
-});
-
-nextBtn.addEventListener('click', () => {
-    // Αφαίρεση pulse animation
-    optionBtns.forEach(btn => btn.classList.remove('pulse-btn'));
+// Start Game based on Mode
+window.startGame = function(mode) {
+    // Hide start screen
+    startScreenEl.classList.add('hidden');
+    gameContainerEl.classList.remove('hidden');
     
-    currentWordIndex++;
-    if (currentWordIndex >= words.length) {
-        // restart array
-        initGame();
-        feedbackMessageEl.textContent = 'Μπράβο! Τελείωσες όλες τις λέξεις και ξεκινάμε νέο γύρο! 🏆';
-        feedbackMessageEl.className = 'feedback-message success pop-in';
-    } else {
-        loadWord();
+    // Clear any existing boards just in case (except the home button)
+    const boards = gameContainerEl.querySelectorAll('.player-board');
+    boards.forEach(b => b.remove());
+    gameContainerEl.className = 'game-container'; // reset classes
+    
+    playerBoards = [];
+    
+    if (mode === 'single') {
+        gameContainerEl.classList.add('mode-single');
+        playerBoards.push(new PlayerBoard(gameContainerEl));
+    } else if (mode === 'tablet') {
+        gameContainerEl.classList.add('mode-tablet');
+        playerBoards.push(new PlayerBoard(gameContainerEl)); // Player 1
+        playerBoards.push(new PlayerBoard(gameContainerEl)); // Player 2
+    } else if (mode === 'board') {
+        gameContainerEl.classList.add('mode-board');
+        playerBoards.push(new PlayerBoard(gameContainerEl)); // Player 1
+        playerBoards.push(new PlayerBoard(gameContainerEl)); // Player 2
     }
-});
+};
 
-// Start the game on load
-window.onload = initGame;
+

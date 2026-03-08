@@ -8,40 +8,72 @@
     <link rel="stylesheet" href="style.css?v=1">
 </head>
 <body>
-    <div class="app-container">
-        <header>
-            <h1>Παιχνίδι Ορθογραφίας</h1>
-            <p>Διάλεξε τη σωστή κατάληξη!</p>
-            <div class="score-board">
-                <div class="score-badge correct">
-                    <span>Σωστά:</span> <span id="correct-score">0</span>
-                </div>
-                <div class="score-badge wrong">
-                    <span>Λάθος:</span> <span id="wrong-score">0</span>
-                </div>
-            </div>
-        </header>
-
-        <main class="game-area">
-            <div class="word-card" id="word-card">
-                <span id="word-article" class="word-article"></span> <span id="word-stem">πουλ</span><span id="word-ending" class="missing">&nbsp;</span>
-            </div>
-            
-            <div class="feedback-message" id="feedback-message"></div>
-
-            <div class="options-container">
-                <button class="option-btn" data-ending="ι">-ι</button>
-                <button class="option-btn" data-ending="η">-η</button>
-                <button class="option-btn" data-ending="ει">-ει</button>
-                <button class="option-btn" data-ending="οι">-οι</button>
-                <button class="option-btn" data-ending="ω">-ω</button>
-                <button class="option-btn" data-ending="ο">-ο</button>
+    <div class="app-container" id="app">
+        <!-- Αρχική Οθόνη Επιλογής -->
+        <div id="start-screen" class="start-screen">
+            <header>
+                <h1>Παιχνίδι Ορθογραφίας</h1>
+                <p>Διάλεξε πώς θέλεις να παίξεις!</p>
+            </header>
+            <div class="mode-options">
+                <button class="mode-btn" onclick="startGame('single')">
+                    <span class="icon">👤</span>
+                    <span>1 Παιδί</span>
+                </button>
+                <button class="mode-btn" onclick="startGame('tablet')">
+                    <span class="icon">📱</span>
+                    <span>2 Παιδιά (Απέναντι)</span>
+                </button>
+                <button class="mode-btn" onclick="startGame('board')">
+                    <span class="icon">🖥️</span>
+                    <span>2 Παιδιά (Δίπλα-δίπλα)</span>
+                </button>
             </div>
             
-            <button id="next-btn" class="next-btn hidden">Επόμενη Λέξη ➔</button>
-        </main>
+        </div>
+
+        <!-- Κύριος χώρος παιχνιδιού (κρύβεται αρχικά) -->
+        <div id="game-container" class="game-container hidden">
+            <!-- Εδώ θα προστεθούν δυναμικά τα boards από την JS -->
+            <button id="home-btn" class="home-btn" onclick="location.reload()">🏠 Αρχικό Μενού</button>
+        </div>
         
-        <!-- Confetti Canvas -->
+        <!-- Template για το ταμπλό παίκτη (κρυμμένο) -->
+        <template id="player-board-template">
+            <div class="player-board">
+                <header>
+                    <div class="score-board">
+                        <div class="score-badge correct">
+                            <span>Σωστά:</span> <span class="correct-score">0</span>
+                        </div>
+                        <div class="score-badge wrong">
+                            <span>Λάθος:</span> <span class="wrong-score">0</span>
+                        </div>
+                    </div>
+                </header>
+
+                <main class="game-area">
+                    <div class="word-card" class="word-card">
+                        <span class="word-article"></span> <span class="word-stem">πουλ</span><span class="word-ending missing">&nbsp;</span>
+                    </div>
+                    
+                    <div class="feedback-message"></div>
+
+                    <div class="options-container">
+                        <button class="option-btn" data-ending="ι">-ι</button>
+                        <button class="option-btn" data-ending="η">-η</button>
+                        <button class="option-btn" data-ending="ει">-ει</button>
+                        <button class="option-btn" data-ending="οι">-οι</button>
+                        <button class="option-btn" data-ending="ω">-ω</button>
+                        <button class="option-btn" data-ending="ο">-ο</button>
+                    </div>
+                    
+                    <button class="next-btn hidden">Επόμενη Λέξη ➔</button>
+                </main>
+            </div>
+        </template>
+
+        <!-- Confetti Canvas (Κοινό για όλους) -->
         <canvas id="confetti-canvas"></canvas>
     </div>
 
