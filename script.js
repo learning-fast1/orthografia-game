@@ -18,14 +18,16 @@ const words = [
     { article: 'η', stem: 'βροχ', option: 'η', correct: 'ή', full: 'βροχή' },
     { article: 'η', stem: 'αράχν', option: 'η', correct: 'η', full: 'αράχνη' },
 
-    // Ρήματα σε -ει (δεν παίρνουν άρθρο)
-    { article: '', stem: 'τρέχ', option: 'ει', correct: 'ει', full: 'τρέχει' },
-    { article: '', stem: 'παίζ', option: 'ει', correct: 'ει', full: 'παίζει' },
-    { article: '', stem: 'γράφ', option: 'ει', correct: 'ει', full: 'γράφει' },
-    { article: '', stem: 'διαβάζ', option: 'ει', correct: 'ει', full: 'διαβάζει' },
-    { article: '', stem: 'βλέπ', option: 'ει', correct: 'ει', full: 'βλέπει' },
-    { article: '', stem: 'κλαί', option: 'ει', correct: 'ει', full: 'κλαίει' },
-    { article: '', stem: 'τραγουδά', option: 'ει', correct: 'ει', full: 'τραγουδάει' },
+    // Ρήματα (-ει ή -ω)
+    // Εδώ βάζουμε και ρήματα σε -ει και ρήματα σε -ω
+    { article: 'αυτός', stem: 'τρέχ', option: 'ει', correct: 'ει', full: 'τρέχει' },
+    { article: 'εγώ', stem: 'παίζ', option: 'ω', correct: 'ω', full: 'παίζω' },
+    { article: 'αυτή', stem: 'γράφ', option: 'ει', correct: 'ει', full: 'γράφει' },
+    { article: 'αυτός', stem: 'διαβάζ', option: 'ει', correct: 'ει', full: 'διαβάζει' },
+    { article: 'εγώ', stem: 'βλέπ', option: 'ω', correct: 'ω', full: 'βλέπω' },
+    { article: 'αυτό', stem: 'κλαί', option: 'ει', correct: 'ει', full: 'κλαίει' },
+    { article: 'αυτή', stem: 'τραγουδά', option: 'ει', correct: 'ει', full: 'τραγουδάει' },
+    { article: 'εγώ', stem: 'τρέχ', option: 'ω', correct: 'ω', full: 'τρέχω' },
 
     // Πληθυντικός Ουσιαστικών σε -οι
     { article: 'οι', stem: 'άνθρωπ', option: 'οι', correct: 'οι', full: 'άνθρωποι' },

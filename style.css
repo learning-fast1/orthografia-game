@@ -183,8 +183,9 @@ header p {
 }
 
 .options-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 0.5rem;
     width: 100%;
 }
@@ -192,8 +193,8 @@ header p {
 .option-btn {
     border: 4px solid rgba(255,255,255,0.8);
     border-radius: 18px;
-    padding: 0.6rem; /* Μειωμένο padding */
-    font-size: 1.5rem; /* Μειωμένο font-size */
+    padding: 0.6rem 1rem;
+    font-size: 1.5rem;
     font-weight: 900;
     color: white;
     cursor: pointer;
@@ -201,6 +202,8 @@ header p {
     box-shadow: 0 5px 0 rgba(0,0,0,0.15);
     text-shadow: 2px 2px 0px rgba(0,0,0,0.3);
     animation: subtleWiggle 3s infinite ease-in-out;
+    flex: 1 1 30%; /* Will try to fit 3 per row */
+    min-width: 80px;
 }
 
 .option-btn:active {
@@ -217,6 +220,7 @@ header p {
 .option-btn[data-ending="η"] { background: var(--secondary-color); box-shadow: 0 6px 0 var(--secondary-color-hover); }
 .option-btn[data-ending="ει"] { background: var(--tertiary-color); box-shadow: 0 6px 0 var(--tertiary-color-hover); }
 .option-btn[data-ending="οι"] { background: var(--quaternary-color); box-shadow: 0 6px 0 var(--quaternary-color-hover); }
+.option-btn[data-ending="ω"] { background: #9B59B6; box-shadow: 0 6px 0 #8E44AD; }
 
 /* Animation για το σωστό κουμπί όταν βρεθεί */
 @keyframes pulse-btn {
