@@ -51,11 +51,15 @@ const words = [
 
 // DOM Elements for Mode Selection
 const startScreenEl = document.getElementById('start-screen');
+const timeScreenEl = document.getElementById('time-screen');
 const gameContainerEl = document.getElementById('game-container');
+const timerDisplayEl = document.getElementById('timer-display');
 const templateEl = document.getElementById('player-board-template');
 
 // Global Instances
 let playerBoards = [];
+let selectedMode = null;
+let gameTimer = null;
 
 // Ήχοι (Προαιρετικό, αν θέλεις να προσθέσεις στο μέλλον)
 const playCorrectSound = () => {
@@ -225,6 +229,16 @@ class PlayerBoard {
         }
     }
 
+    disable() {
+        this.optionBtns.forEach(btn => {
+            btn.disabled = true;
+            btn.style.opacity = '0.4';
+        });
+        this.nextBtn.classList.add('hidden');
+        this.feedbackMessageEl.textContent = `⏰ Τέλος! Σωστά: ${this.correctScore} | Λάθος: ${this.wrongScore}`;
+        this.feedbackMessageEl.className = 'feedback-message success pop-in';
+    }
+
     handleNextClick() {
         // Αφαίρεση pulse animation
         this.optionBtns.forEach(btn => btn.classList.remove('pulse-btn'));
@@ -241,31 +255,78 @@ class PlayerBoard {
     }
 }
 
-// Start Game based on Mode
-window.startGame = function(mode) {
-    // Hide start screen
+window.selectMode = function(mode) {
+    selectedMode = mode;
     startScreenEl.classList.add('hidden');
+    timeScreenEl.classList.remove('hidden');
+};
+
+window.goBack = function() {
+    timeScreenEl.classList.add('hidden');
+    startScreenEl.classList.remove('hidden');
+};
+
+// Start Game based on Mode and Time
+window.startGame = function(seconds) {
+    timeScreenEl.classList.add('hidden');
     gameContainerEl.classList.remove('hidden');
-    
+
     // Clear any existing boards just in case (except the home button)
     const boards = gameContainerEl.querySelectorAll('.player-board');
     boards.forEach(b => b.remove());
     gameContainerEl.className = 'game-container'; // reset classes
-    
+
     playerBoards = [];
-    
-    if (mode === 'single') {
+
+    if (selectedMode === 'single') {
         gameContainerEl.classList.add('mode-single');
         playerBoards.push(new PlayerBoard(gameContainerEl));
-    } else if (mode === 'tablet') {
+    } else if (selectedMode === 'tablet') {
         gameContainerEl.classList.add('mode-tablet');
         playerBoards.push(new PlayerBoard(gameContainerEl)); // Player 1
         playerBoards.push(new PlayerBoard(gameContainerEl)); // Player 2
-    } else if (mode === 'board') {
+    } else if (selectedMode === 'board') {
         gameContainerEl.classList.add('mode-board');
         playerBoards.push(new PlayerBoard(gameContainerEl)); // Player 1
         playerBoards.push(new PlayerBoard(gameContainerEl)); // Player 2
     }
+
+    startTimer(seconds);
 };
+
+function startTimer(seconds) {
+    if (gameTimer) clearInterval(gameTimer);
+    let timeRemaining = seconds;
+
+    function updateDisplay() {
+        const mins = Math.floor(timeRemaining / 60);
+        const secs = timeRemaining % 60;
+        timerDisplayEl.textContent = mins > 0
+            ? `⏱️ ${mins}:${secs.toString().padStart(2, '0')}`
+            : `⏱️ ${secs}`;
+        if (timeRemaining <= 10) {
+            timerDisplayEl.classList.add('timer-urgent');
+        } else {
+            timerDisplayEl.classList.remove('timer-urgent');
+        }
+    }
+
+    updateDisplay();
+    gameTimer = setInterval(() => {
+        timeRemaining--;
+        updateDisplay();
+        if (timeRemaining <= 0) {
+            clearInterval(gameTimer);
+            endGame();
+        }
+    }, 1000);
+}
+
+function endGame() {
+    timerDisplayEl.textContent = '⏰ Τέλος χρόνου!';
+    timerDisplayEl.classList.remove('timer-urgent');
+    timerDisplayEl.classList.add('timer-ended');
+    playerBoards.forEach(board => board.disable());
+}
 
 

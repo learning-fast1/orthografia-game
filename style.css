@@ -411,6 +411,60 @@ header p {
     background-color: #E8F8F5;
 }
 
+.time-btn {
+    border-color: #FF9100;
+    color: #FF9100;
+}
+
+.back-btn {
+    margin-top: 1rem;
+    background: none;
+    border: 3px solid #aaa;
+    border-radius: 15px;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    border-color: #6C5CE7;
+    color: #6C5CE7;
+    transform: translateX(-3px);
+}
+
+.timer-display {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #6C5CE7;
+    color: white;
+    border-radius: 15px;
+    padding: 0.4rem 1.2rem;
+    font-size: 1.2rem;
+    font-weight: 900;
+    box-shadow: 0 4px 0px rgba(0,0,0,0.2);
+    white-space: nowrap;
+    z-index: 100;
+}
+
+@keyframes timerPulse {
+    0%, 100% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.1); }
+}
+
+.timer-urgent {
+    background: #FF1E56;
+    animation: timerPulse 0.5s infinite ease-in-out;
+}
+
+.timer-ended {
+    background: #636e72;
+}
+
 #confetti-canvas {
     position: fixed;
     top: 0;
