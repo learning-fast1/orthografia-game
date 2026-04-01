@@ -64,12 +64,6 @@ let selectedLevel = 1;
 let gameTimer = null;
 let gameDuration = 0;
 
-// GA4 startup check
-window.addEventListener('load', () => {
-    console.log('gtag type:', typeof gtag);
-    console.log('Page URL:', window.location.href);
-});
-
 // GA4 Event Tracking Helper
 function trackEvent(eventName, params) {
     try {
