@@ -64,19 +64,19 @@ let selectedLevel = 1;
 let gameTimer = null;
 let gameDuration = 0;
 
+// GA4 startup check
+window.addEventListener('load', () => {
+    console.log('gtag type:', typeof gtag);
+    console.log('Page URL:', window.location.href);
+});
+
 // GA4 Event Tracking Helper
 function trackEvent(eventName, params) {
-    console.log('[GA4] trackEvent called:', eventName, params || {});
     try {
-        if (typeof gtag !== 'function') {
-            console.warn('[GA4] gtag is NOT defined! GA script may not have loaded.');
-            return;
+        if (typeof gtag === 'function') {
+            gtag('event', eventName, params || {});
         }
-        gtag('event', eventName, params || {});
-        console.log('[GA4] gtag event sent:', eventName);
-    } catch (e) {
-        console.error('[GA4] Error sending event:', eventName, e);
-    }
+    } catch (e) {}
 }
 
 // Ήχοι (Προαιρετικό, αν θέλεις να προσθέσεις στο μέλλον)
@@ -385,7 +385,6 @@ function startTimer(seconds) {
 }
 
 function endGame() {
-    console.log('[GA4] FINISH GAME EVENT TRIGGERED');
     timerDisplayEl.textContent = '⏰ Τέλος χρόνου!';
     timerDisplayEl.classList.remove('timer-urgent');
     timerDisplayEl.classList.add('timer-ended');
@@ -395,7 +394,6 @@ function endGame() {
     const totalWrong = playerBoards.reduce((sum, b) => sum + b.wrongScore, 0);
     const total = totalCorrect + totalWrong;
     const score = total > 0 ? Math.round((totalCorrect / total) * 100) : 0;
-    console.log('[GA4] finish_game params:', { score, totalCorrect, totalWrong, gameDuration, selectedLevel });
     trackEvent('finish_game', {
         score,
         total_correct: totalCorrect,
