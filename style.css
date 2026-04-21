@@ -51,6 +51,11 @@ body {
 }
 
 /* Αρχική Οθόνη */
+.game-logo {
+    width: 180px;
+    margin-bottom: 0.5rem;
+}
+
 .start-screen {
     display: flex;
     flex-direction: column;
