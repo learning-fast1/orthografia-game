@@ -128,7 +128,23 @@ class PlayerBoard {
     }
     
     initGame() {
-        this.playerWords = shuffleArray(words);
+        if (this.level === 1) {
+            const nounArticles = ['ο', 'η', 'το', 'οι'];
+            this.playerWords = shuffleArray(words.filter(w => nounArticles.includes(w.article)));
+            const articleOptions = ['ο', 'η', 'το', 'οι'];
+            this.optionBtns.forEach((btn, i) => {
+                if (i < articleOptions.length) {
+                    btn.setAttribute('data-ending', articleOptions[i]);
+                    btn.textContent = articleOptions[i];
+                    btn.style.display = '';
+                } else {
+                    btn.style.display = 'none';
+                }
+            });
+        } else {
+            this.playerWords = shuffleArray(words);
+            this.optionBtns.forEach(btn => btn.style.display = '');
+        }
         this.currentWordIndex = 0;
         this.correctScore = 0;
         this.wrongScore = 0;
@@ -141,17 +157,27 @@ class PlayerBoard {
         const currentWord = this.playerWords[this.currentWordIndex];
         
         // Reset UI
-        const isVerb = ['εγώ', 'εσύ', 'αυτός', 'αυτή', 'αυτό', 'εμείς', 'εσείς', 'αυτοί'].includes(currentWord.article);
-        if (currentWord.article && (this.level === 1 || isVerb)) {
-            this.wordArticleEl.textContent = currentWord.article + ' ';
+        if (this.level === 1) {
+            this.wordArticleEl.textContent = ' ';
+            this.wordArticleEl.className = 'word-article missing';
             this.wordArticleEl.style.display = 'inline';
+            this.wordStemEl.textContent = currentWord.full;
+            this.wordEndingEl.style.display = 'none';
         } else {
-            this.wordArticleEl.style.display = 'none';
-            this.wordArticleEl.textContent = '';
+            this.wordEndingEl.style.display = '';
+            this.wordEndingEl.textContent = ' ';
+            this.wordEndingEl.className = 'word-ending missing';
+            this.wordStemEl.textContent = currentWord.stem;
+            const isVerb = ['εγώ', 'εσύ', 'αυτός', 'αυτή', 'αυτό', 'εμείς', 'εσείς', 'αυτοί'].includes(currentWord.article);
+            if (currentWord.article && (this.level === 2 || isVerb)) {
+                this.wordArticleEl.textContent = currentWord.article + ' ';
+                this.wordArticleEl.className = 'word-article';
+                this.wordArticleEl.style.display = 'inline';
+            } else {
+                this.wordArticleEl.style.display = 'none';
+                this.wordArticleEl.textContent = '';
+            }
         }
-        this.wordStemEl.textContent = currentWord.stem;
-        this.wordEndingEl.textContent = '\u00A0';
-        this.wordEndingEl.className = 'word-ending missing';
         this.wordCardEl.className = 'word-card';
         this.feedbackMessageEl.textContent = '';
         this.feedbackMessageEl.className = 'feedback-message';
@@ -174,15 +200,16 @@ class PlayerBoard {
         const selectedOption = event.target.getAttribute('data-ending');
         const currentWord = this.playerWords[this.currentWordIndex];
 
+        const correctAnswer = this.level === 1 ? currentWord.article : currentWord.option;
         const attemptNumber = this.attemptsForWord + 1;
         trackEvent('answer_submitted', {
             word: currentWord.full,
-            is_correct: selectedOption === currentWord.option,
+            is_correct: selectedOption === correctAnswer,
             level: this.level,
             attempt_number: attemptNumber
         });
 
-        if (selectedOption === currentWord.option) {
+        if (selectedOption === correctAnswer) {
             // Correct Answer
             trackEvent('correct_answer', {
                 word: currentWord.full,
@@ -190,8 +217,13 @@ class PlayerBoard {
                 attempt_number: attemptNumber
             });
             playCorrectSound();
-            this.wordEndingEl.textContent = currentWord.correct;
-            this.wordEndingEl.className = 'word-ending missing filled-correct';
+            if (this.level === 1) {
+                this.wordArticleEl.textContent = currentWord.article + ' ';
+                this.wordArticleEl.className = 'word-article missing filled-correct';
+            } else {
+                this.wordEndingEl.textContent = currentWord.correct;
+                this.wordEndingEl.className = 'word-ending missing filled-correct';
+            }
             this.wordCardEl.className = 'word-card correct-anim';
             
             this.feedbackMessageEl.textContent = 'Τέλεια! 🌟';
@@ -216,7 +248,7 @@ class PlayerBoard {
             // Disable buttons
             this.optionBtns.forEach(btn => {
                 btn.disabled = true;
-                if (btn.getAttribute('data-ending') !== currentWord.option) {
+                if (btn.getAttribute('data-ending') !== correctAnswer) {
                     btn.style.opacity = '0.4';
                     btn.style.transform = 'scale(0.95)';
                 } else {
