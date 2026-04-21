@@ -104,6 +104,18 @@
             <button id="home-btn" class="home-btn" onclick="location.reload()">🏠 Αρχικό Μενού</button>
             <div id="timer-display" class="timer-display"></div>
         </div>
+
+        <!-- Overlay τέλους παιχνιδιού -->
+        <div id="end-overlay" class="end-overlay hidden">
+            <div class="end-card">
+                <div class="end-title">⏰ Τέλος χρόνου!</div>
+                <div id="end-scores" class="end-scores"></div>
+                <div class="end-buttons">
+                    <button class="end-btn retry-btn" id="retry-btn">🔄 Επανάληψη λαθών</button>
+                    <button class="end-btn home-end-btn" onclick="location.reload()">🏠 Αρχική</button>
+                </div>
+            </div>
+        </div>
         
         <!-- Template για το ταμπλό παίκτη (κρυμμένο) -->
         <template id="player-board-template">

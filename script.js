@@ -56,6 +56,7 @@ const timeScreenEl = document.getElementById('time-screen');
 const gameContainerEl = document.getElementById('game-container');
 const timerDisplayEl = document.getElementById('timer-display');
 const templateEl = document.getElementById('player-board-template');
+const endOverlayEl = document.getElementById('end-overlay');
 
 // Global Instances
 let playerBoards = [];
@@ -467,14 +468,29 @@ function endGame() {
     });
 
     const hasWrongWords = playerBoards.some(b => b.wrongWords.length > 0);
+    const endOverlay = document.getElementById('end-overlay');
+    const endScores = document.getElementById('end-scores');
+    const retryBtn = document.getElementById('retry-btn');
+
+    endScores.innerHTML = playerBoards.map((b, i) => {
+        const label = playerBoards.length > 1 ? `<span class="player-label">Παίκτης ${i + 1}</span>` : '';
+        return `${label}<span class="end-correct">✅ Σωστά: ${b.correctScore}</span><span class="end-wrong">❌ Λάθος: ${b.wrongScore}</span>`;
+    }).join('<hr class="score-divider">');
+
     if (hasWrongWords) {
-        setTimeout(() => {
+        retryBtn.classList.remove('hidden');
+        retryBtn.onclick = () => {
+            endOverlay.classList.add('hidden');
             timerDisplayEl.textContent = '📝 Επανάληψη λαθών!';
             timerDisplayEl.classList.remove('timer-ended');
             timerDisplayEl.classList.add('timer-review');
             playerBoards.forEach(board => board.startReview());
-        }, 2000);
+        };
+    } else {
+        retryBtn.classList.add('hidden');
     }
+
+    setTimeout(() => endOverlay.classList.remove('hidden'), 800);
 }
 
 
