@@ -140,7 +140,7 @@ function shuffleArray(array) {
     return newArray;
 }
 
-function shuffleNoConsecutive(array, getType) {
+function shuffleNoConsecutive(array, getType, avoidFirstType = null) {
     const groups = {};
     shuffleArray(array).forEach(item => {
         const type = getType(item);
@@ -149,7 +149,7 @@ function shuffleNoConsecutive(array, getType) {
     });
 
     const result = [];
-    let lastType = null;
+    let lastType = avoidFirstType;
 
     while (result.length < array.length) {
         const candidates = Object.entries(groups)
@@ -200,10 +200,10 @@ class PlayerBoard {
         this.initGame();
     }
     
-    initGame() {
+    initGame(avoidFirstType = null) {
         if (this.level === 1) {
             const nounArticles = ['ο', 'η', 'το', 'οι'];
-            this.playerWords = shuffleNoConsecutive(words.filter(w => nounArticles.includes(w.article)), w => w.article);
+            this.playerWords = shuffleNoConsecutive(words.filter(w => nounArticles.includes(w.article)), w => w.article, avoidFirstType);
             const articleOptions = ['ο', 'η', 'το', 'οι'];
             this.optionBtns.forEach((btn, i) => {
                 if (i < articleOptions.length) {
@@ -215,7 +215,7 @@ class PlayerBoard {
                 }
             });
         } else {
-            this.playerWords = shuffleNoConsecutive(words, w => w.option);
+            this.playerWords = shuffleNoConsecutive(words, w => w.option, avoidFirstType);
             this.optionBtns.forEach(btn => btn.style.display = '');
         }
         this.currentWordIndex = 0;
@@ -433,7 +433,9 @@ class PlayerBoard {
                 setTimeout(() => this.loadWord(), 1500);
             } else {
                 trackEvent('restart_game');
-                this.initGame();
+                const lastWord = this.playerWords[this.playerWords.length - 1];
+                const lastType = this.level === 1 ? lastWord.article : lastWord.option;
+                this.initGame(lastType);
                 this.feedbackMessageEl.textContent = 'Τέλειο! Καμία λάθος λέξη! Ξεκινάμε νέο γύρο! 🏆';
                 this.feedbackMessageEl.className = 'feedback-message success pop-in';
             }
