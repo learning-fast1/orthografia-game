@@ -386,6 +386,7 @@ class PlayerBoard {
         if (this.wrongWords.length === 0) {
             this.feedbackMessageEl.textContent = 'Μπράβο! Δεν έκανες κανένα λάθος! 🌟';
             this.feedbackMessageEl.className = 'feedback-message success pop-in';
+            setTimeout(() => goToStartScreen(), 2500);
             return;
         }
         this.isReviewMode = true;
@@ -411,27 +412,39 @@ class PlayerBoard {
                 score: this.correctScore,
                 mistakes: this.wrongScore
             });
-            if (this.isReviewMode) {
-                // Μετά την επανάληψη λαθών → αρχική σελίδα
-                this.feedbackMessageEl.textContent = 'Μπράβο! Τελείωσες την επανάληψη! 🏆';
-                this.feedbackMessageEl.className = 'feedback-message success pop-in';
-                setTimeout(() => location.reload(), 2000);
-            } else if (this.wrongWords.length > 0) {
+
+            if (this.wrongWords.length > 0) {
+                // Υπάρχουν ακόμα λάθη → αυτόματα ξεκινά επανάληψη
+                const reviewCount = this.wrongWords.length;
                 this.playerWords = shuffleNoConsecutive(this.wrongWords, w => this.level === 1 ? w.article : w.option);
                 this.wrongWords = [];
                 this.currentWordIndex = 0;
                 this.isReviewMode = true;
-                this.feedbackMessageEl.textContent = `Ας επαναλάβουμε τα λάθη σου! (${this.playerWords.length} λέξεις) 💪`;
                 this.loadWord();
-                this.feedbackMessageEl.textContent = `Ας επαναλάβουμε τα λάθη σου! (${this.playerWords.length} λέξεις) 💪`;
+                this.feedbackMessageEl.textContent = `💪 Ας επαναλάβουμε ${reviewCount} λέξ${reviewCount === 1 ? 'η' : 'εις'}!`;
                 this.feedbackMessageEl.className = 'feedback-message error pop-in';
             } else {
-                trackEvent('restart_game');
-                const lastWord = this.playerWords[this.playerWords.length - 1];
-                const lastType = this.level === 1 ? lastWord.article : lastWord.option;
-                this.initGame(lastType);
-                this.feedbackMessageEl.textContent = 'Τέλειο! Καμία λάθος λέξη! Ξεκινάμε νέο γύρο! 🏆';
+                // Δεν υπάρχουν λάθη → πίσω στην αρχική οθόνη
+                const message = this.isReviewMode
+                    ? 'Μπράβο! Τελείωσες την επανάληψη! 🏆'
+                    : 'Τέλειο! Τα βρήκες όλα σωστά! 🏆';
+                this.feedbackMessageEl.textContent = message;
                 this.feedbackMessageEl.className = 'feedback-message success pop-in';
+
+                // Μεγάλο confetti γιορτής
+                confetti({
+                    particleCount: 250,
+                    spread: 120,
+                    origin: { y: 0.5 },
+                    colors: ['#FF4757', '#2ED573', '#FFA502', '#1E90FF', '#FF69B4', '#6C5CE7']
+                });
+
+                // Disable κουμπιά κατά τη μετάβαση
+                this.optionBtns.forEach(btn => { btn.disabled = true; });
+                this.nextBtn.classList.add('hidden');
+
+                // Αυτόματη επιστροφή στην αρχική μετά από 2.5 δευτ.
+                setTimeout(() => goToStartScreen(), 2500);
             }
         } else {
             this.loadWord();
@@ -461,6 +474,29 @@ window.goBackToLevel = function() {
     levelScreenEl.classList.remove('hidden');
 };
 
+// Επιστροφή στην αρχική οθόνη μετά το τέλος γύρου/επανάληψης
+function goToStartScreen() {
+    // Σταμάτα τον timer αν τρέχει
+    if (gameTimer) {
+        clearInterval(gameTimer);
+        gameTimer = null;
+    }
+
+    // Καθάρισε τα boards
+    const boards = gameContainerEl.querySelectorAll('.player-board');
+    boards.forEach(b => b.remove());
+    playerBoards = [];
+
+    // Κρύψε παιχνίδι και overlay
+    gameContainerEl.classList.add('hidden');
+    endOverlayEl.classList.add('hidden');
+    timerDisplayEl.textContent = '';
+    timerDisplayEl.className = 'timer-display';
+
+    // Εμφάνισε αρχική οθόνη
+    startScreenEl.classList.remove('hidden');
+}
+
 // Start Game based on Mode and Time
 window.startGame = function(seconds) {
     timeScreenEl.classList.add('hidden');
@@ -480,6 +516,11 @@ window.startGame = function(seconds) {
         gameContainerEl.classList.add('mode-tablet');
         playerBoards.push(new PlayerBoard(gameContainerEl, selectedLevel));
         playerBoards.push(new PlayerBoard(gameContainerEl, selectedLevel));
+        // Γύρνα τον 2ο πίνακα 180° για τον απέναντι παίκτη (μόνο σε κινητό)
+        playerBoards[1].boardEl.classList.add('player-rotated');
+        if (window.innerWidth <= 1024) {
+            playerBoards[1].boardEl.style.transform = 'rotate(180deg)';
+        }
     } else if (selectedMode === 'board') {
         gameContainerEl.classList.add('mode-board');
         playerBoards.push(new PlayerBoard(gameContainerEl, selectedLevel));
