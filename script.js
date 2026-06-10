@@ -312,16 +312,18 @@ class PlayerBoard {
             }
             this.updateScore();
 
-            // Fire Confetti
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { 
-                    x: this.boardEl.getBoundingClientRect().left / window.innerWidth + (this.boardEl.getBoundingClientRect().width / 2) / window.innerWidth,
-                    y: this.boardEl.getBoundingClientRect().top / window.innerHeight + (this.boardEl.getBoundingClientRect().height / 2) / window.innerHeight
-                },
-                colors: ['#FF4757', '#2ED573', '#FFA502', '#1E90FF', '#FF69B4']
-            });
+            // Fire Confetti (μόνο σε 1 παίκτη)
+            if (selectedMode === 'single') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { 
+                        x: this.boardEl.getBoundingClientRect().left / window.innerWidth + (this.boardEl.getBoundingClientRect().width / 2) / window.innerWidth,
+                        y: this.boardEl.getBoundingClientRect().top / window.innerHeight + (this.boardEl.getBoundingClientRect().height / 2) / window.innerHeight
+                    },
+                    colors: ['#FF4757', '#2ED573', '#FFA502', '#1E90FF', '#FF69B4']
+                });
+            }
 
             // Disable buttons
             this.optionBtns.forEach(btn => {
@@ -437,13 +439,15 @@ class PlayerBoard {
                 this.feedbackMessageEl.textContent = message;
                 this.feedbackMessageEl.className = 'feedback-message success pop-in';
 
-                // Μεγάλο confetti γιορτής
-                confetti({
-                    particleCount: 250,
-                    spread: 120,
-                    origin: { y: 0.5 },
-                    colors: ['#FF4757', '#2ED573', '#FFA502', '#1E90FF', '#FF69B4', '#6C5CE7']
-                });
+                // Μεγάλο confetti γιορτής (μόνο σε 1 παίκτη)
+                if (selectedMode === 'single') {
+                    confetti({
+                        particleCount: 250,
+                        spread: 120,
+                        origin: { y: 0.5 },
+                        colors: ['#FF4757', '#2ED573', '#FFA502', '#1E90FF', '#FF69B4', '#6C5CE7']
+                    });
+                }
 
                 // Disable κουμπιά κατά τη μετάβαση
                 this.optionBtns.forEach(btn => { btn.disabled = true; });
