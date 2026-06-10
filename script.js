@@ -334,13 +334,19 @@ class PlayerBoard {
                 }
             });
             
-            // Show next button
-            if (this.currentWordIndex === this.playerWords.length - 1) {
-                this.nextBtn.textContent = 'Παίξε ξανά 🔄';
+            // Tablet mode (απέναντι): αυτόματη μετάβαση στην επόμενη λέξη
+            if (selectedMode === 'tablet') {
+                this.nextBtn.classList.add('hidden');
+                setTimeout(() => this.handleNextClick(), 1500);
             } else {
-                this.nextBtn.textContent = 'Επόμενη Λέξη ➔';
+                // Κανονικό mode: δείξε το κουμπί "Επόμενη"
+                if (this.currentWordIndex === this.playerWords.length - 1) {
+                    this.nextBtn.textContent = 'Παίξε ξανά 🔄';
+                } else {
+                    this.nextBtn.textContent = 'Επόμενη Λέξη ➔';
+                }
+                this.nextBtn.classList.remove('hidden');
             }
-            this.nextBtn.classList.remove('hidden');
             
         } else {
             // Wrong Answer
